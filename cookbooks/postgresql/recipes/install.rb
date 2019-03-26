@@ -13,6 +13,26 @@ service 'postgresql' do
   action :nothing
 end
 
+directory '/var/lib/postgresql/.ssh' do
+  user 'postgres'
+  group 'postgres'
+  mode '0700'
+end
+
+file '/var/lib/postgresql/.ssh/id_rsa' do
+  user 'postgres'
+  group 'postgres'
+  mode '0600'
+  content ::File.read("/vagrant/keys/#{node.name}")
+end
+
+ssh_known_hosts_entry '10.11.12.14' do
+  owner 'postgres'
+  group 'postgres'
+  mode '0600'
+  file_location '/var/lib/postgresql/.ssh/known_hosts'
+end
+
 append_if_no_line 'listen to all interfaces' do
   path '/etc/postgresql/11/main/postgresql.conf'
   line "listen_addresses = '*'"
@@ -38,17 +58,4 @@ cookbook_file '/etc/postgresql/11/main/conf.d/log.conf' do
   group 'postgres'
   mode '0600'
   notifies :restart, 'service[postgresql]', :immediately
-end
-
-directory '/var/lib/postgresql/.ssh' do
-  user 'postgres'
-  group 'postgres'
-  mode '0700'
-end
-
-file '/var/lib/postgresql/.ssh/id_rsa' do
-  user 'postgres'
-  group 'postgres'
-  mode '0600'
-  content ::File.read("/vagrant/keys/#{node.name}")
 end

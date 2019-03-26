@@ -33,6 +33,11 @@ Vagrant.configure("2") do |config|
       chef.add_recipe 'common'
       chef.add_recipe 'postgresql::install'
       chef.add_recipe 'postgresql::slave'
+      chef.json = {
+        "postgresql" => {
+          "replication_upstream" => "10.11.12.12"
+        }
+      }
     end
   end
   config.vm.define 'wal_storage' do |storage|
