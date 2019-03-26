@@ -1,8 +1,10 @@
-bash 'create replication user' do
+execute 'create replication user' do
   user 'postgres'
-  code <<~EOF
-    psql -c "select usename from pg_catalog.pg_user" -t -A | grep replicator \
-      || psql -c "create user replicator with replication;"
+  command <<~EOF
+    psql -c "create user replicator with replication;"
+  EOF
+  not_if <<~EOF
+    psql -c "select usename from pg_catalog.pg_user" -t -A | grep replicator
   EOF
 end
 

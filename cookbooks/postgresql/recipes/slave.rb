@@ -1,16 +1,13 @@
-bash 'copy db from master if haven\'t' do
+execute 'copy db from master if haven\'t' do
   user 'postgres'
-  code <<~EOF
-    if [[ -f /var/lib/postgresql/11/main/.managed ]]; then
-      exit 0
-    fi
-
+  command <<~EOF
     systemctl stop postgresql
     rm -rf /var/lib/postgresql/11/main
     pg_basebackup --pgdata=/var/lib/postgresql/11/main --write-recovery-conf --progress --verbose --host=10.11.12.11 --username=replicator
 
     touch /var/lib/postgresql/11/main/.managed
   EOF
+  not_if { ::File.exist?('/var/lib/postgresql/11/main/.managed') }
 end
 
 file '/var/lib/postgresql/11/main/recovery.conf' do
