@@ -8,6 +8,14 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-18.04"
 
+  config.vm.define 'wal_storage' do |storage|
+    storage.vm.hostname = 'wal-storage'
+    storage.vm.network 'private_network', ip: '10.11.12.14'
+    storage.vm.provision 'chef_solo' do |chef|
+      chef.add_recipe 'common'
+      chef.add_recipe 'wal_storage'
+    end
+  end
   config.vm.define 'master' do |master|
     master.vm.hostname = 'master'
     master.vm.network 'private_network', ip: '10.11.12.11'
@@ -40,12 +48,18 @@ Vagrant.configure("2") do |config|
       }
     end
   end
-  config.vm.define 'wal_storage' do |storage|
-    storage.vm.hostname = 'wal-storage'
-    storage.vm.network 'private_network', ip: '10.11.12.14'
-    storage.vm.provision 'chef_solo' do |chef|
+  config.vm.define 'slave3' do |slave3|
+    slave3.vm.hostname = 'slave3'
+    slave3.vm.network 'private_network', ip: '10.11.12.15'
+    slave3.vm.provision 'chef_solo' do |chef|
       chef.add_recipe 'common'
-      chef.add_recipe 'wal_storage'
+      chef.add_recipe 'postgresql::install'
+      chef.add_recipe 'postgresql::slave'
+      chef.json = {
+        "postgresql" => {
+          "replication_upstream" => "10.11.12.12"
+        }
+      }
     end
   end
 end

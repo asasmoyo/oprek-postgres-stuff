@@ -24,7 +24,7 @@ file authorized_keys_path do
   action :touch
 end
 
-postgres_servers = ['master', 'slave1', 'slave2']
+postgres_servers = ['master', 'slave1', 'slave2', 'slave3']
 postgres_servers.each do |server|
   append_if_no_line "#{server} key in authorized keys" do
     path '/home/satpam/.ssh/authorized_keys'
