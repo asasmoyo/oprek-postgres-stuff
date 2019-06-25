@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
     storage.vm.hostname = 'wal-storage'
     storage.vm.network 'private_network', ip: '10.11.12.14'
     storage.vm.provision 'chef_solo' do |chef|
+      chef.custom_config_path = 'chef.rb'
       chef.add_recipe 'common'
       chef.add_recipe 'wal_storage'
     end
@@ -20,6 +21,7 @@ Vagrant.configure("2") do |config|
     master.vm.hostname = 'master'
     master.vm.network 'private_network', ip: '10.11.12.11'
     master.vm.provision 'chef_solo' do |chef|
+      chef.custom_config_path = 'chef.rb'
       chef.add_recipe 'common'
       chef.add_recipe 'postgresql::install'
       chef.add_recipe 'postgresql::master'
@@ -29,6 +31,7 @@ Vagrant.configure("2") do |config|
     slave1.vm.hostname = 'slave1'
     slave1.vm.network 'private_network', ip: '10.11.12.12'
     slave1.vm.provision 'chef_solo' do |chef|
+      chef.custom_config_path = 'chef.rb'
       chef.add_recipe 'common'
       chef.add_recipe 'postgresql::install'
       chef.add_recipe 'postgresql::slave'
@@ -38,6 +41,7 @@ Vagrant.configure("2") do |config|
     slave2.vm.hostname = 'slave2'
     slave2.vm.network 'private_network', ip: '10.11.12.13'
     slave2.vm.provision 'chef_solo' do |chef|
+      chef.custom_config_path = 'chef.rb'
       chef.add_recipe 'common'
       chef.add_recipe 'postgresql::install'
       chef.add_recipe 'postgresql::slave'
@@ -52,6 +56,7 @@ Vagrant.configure("2") do |config|
     slave3.vm.hostname = 'slave3'
     slave3.vm.network 'private_network', ip: '10.11.12.15'
     slave3.vm.provision 'chef_solo' do |chef|
+      chef.custom_config_path = 'chef.rb'
       chef.add_recipe 'common'
       chef.add_recipe 'postgresql::install'
       chef.add_recipe 'postgresql::slave'
