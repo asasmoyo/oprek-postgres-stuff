@@ -1,0 +1,2 @@
+name 'consulize'
+depends 'consul'

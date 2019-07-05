@@ -1,1 +1,4 @@
 .vagrant
+/*.log
+/chefdk.deb
+/.berks
