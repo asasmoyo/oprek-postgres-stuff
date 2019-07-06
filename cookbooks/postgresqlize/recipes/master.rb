@@ -25,8 +25,12 @@ postgresql_access 'access for replicator user' do
 end
 
 postgresql_user 'consul' do
-  createdb true
   action :create
+end
+
+postgresql_database 'consul' do
+  locale 'en_US.utf8'
+  template 'template0'
 end
 
 postgresql_access 'consul for check scripts' do
@@ -52,7 +56,7 @@ file '/opt/consul-template/templates/synchronous_standby.conf.ctmpl' do
   group 'root'
   mode '0644'
   content <<~EOF
-    synchronous_standby_names = '{{ range $key, $val := service "postgresql-async-replica" }}{{ if $key }},{{ end }}walreceiver_{{ $val.Node }}{{ end }}'
+    synchronous_standby_names = '{{ service "postgresql-sync-replica" | len }}({{ range $key, $val := service "postgresql-sync-replica" }}{{ if $key }},{{ end }}walreceiver_{{ $val.Node }}{{ end }})'
   EOF
   notifies :restart, 'service[consul-template]'
 end

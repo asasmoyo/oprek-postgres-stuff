@@ -1,5 +1,5 @@
 apt_update 'daily update apt cache' do
-  frequency 60 * 60 * 24
+  frequency 60 * 60
   action :periodic
 end
 

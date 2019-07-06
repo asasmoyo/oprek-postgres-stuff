@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define 'wal_storage' do |storage|
     storage.vm.hostname = 'wal-storage'
-    storage.vm.network 'private_network', ip: '10.11.12.14'
+    storage.vm.network 'private_network', ip: '10.11.12.10'
     storage.vm.provision 'chef_solo' do |chef|
       chef.cookbooks_path = 'berks-cookbooks'
       chef.roles_path = 'roles'
@@ -85,6 +85,25 @@ Vagrant.configure("2") do |config|
       }
 
       chef.add_role 'postgresql_async_replica'
+    end
+  end
+  config.vm.define 'slave3' do |slave3|
+    slave3.vm.hostname = 'slave3'
+    slave3.vm.network 'private_network', ip: '10.11.12.14'
+    slave3.vm.provision 'chef_solo' do |chef|
+      chef.cookbooks_path = 'berks-cookbooks'
+      chef.roles_path = 'roles'
+      chef.custom_config_path = 'chef.rb'
+      chef.install = false
+      chef.json = {
+        'consul' => {
+          'config' => {
+            'retry_join' => ['10.11.12.11']
+          }
+        }
+      }
+
+      chef.add_role 'postgresql_sync_replica'
     end
   end
 end
